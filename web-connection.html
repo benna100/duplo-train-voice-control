@@ -1,0 +1,119 @@
+<!-- From this persons comment https://legotrain.netlify.app/ https://legotrain.netlify.app/ -->
+<html>
+  <head>
+    <title>Train</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/LEGO_logo.svg/128px-LEGO_logo.svg.png"
+    />
+    <style>
+      body {
+        zoom: 500%;
+        display: grid;
+        height: 20vh;
+        margin: 0;
+        place-items: center center;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      div {
+        text-align: center;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 100px;
+        border-radius: 5px;
+        background: #ccc;
+        outline: none;
+        -webkit-appearance: slider-vertical;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      let characteristic;
+
+      async function connect() {
+        try {
+          let device = await navigator.bluetooth.requestDevice({
+            filters: [
+              {
+                services: ["00001623-1212-efde-1623-785feabcd123"],
+              },
+            ],
+          });
+
+          let server = await device.gatt.connect();
+
+          let service = await server.getPrimaryService(
+            "00001623-1212-efde-1623-785feabcd123"
+          );
+
+          characteristic = await service.getCharacteristic(
+            "00001624-1212-efde-1623-785feabcd123"
+          );
+
+          characteristic.addEventListener(
+            "characteristicvaluechanged",
+            handleCharacteristicValueChanged
+          );
+
+          $("#connect").hide();
+          $("#stop").show();
+          $("#throttle").prop("disabled", false);
+        } catch (e) {
+          alert(e);
+        }
+      }
+
+      function drive(speed) {
+        write([0x81, 0x00, 0x00, 0x51, 0x00, speed]);
+      }
+
+      function handleCharacteristicValueChanged(event) {
+        var value = event.target.value;
+        console.log("Received", new Int8Array(value.buffer.slice(2)));
+      }
+
+      function write(data) {
+        var message = new Int8Array(2 + data.length);
+        message[0] = message.length;
+        message.set(data, 2);
+        characteristic.writeValue(message);
+      }
+
+      function stop() {
+        drive(0);
+        $("#throttle").val(0);
+      }
+
+      $(document).on("input", "#throttle", function () {
+        drive(+$(this).val());
+      });
+    </script>
+  </head>
+  <body>
+    <div>
+      <input
+        id="throttle"
+        orient="vertical"
+        type="range"
+        step="10"
+        value="0"
+        min="-100"
+        max="100"
+        disabled
+      />
+      <br />
+      <button id="connect" onclick="connect()">Connect</button>
+      <button id="stop" onclick="stop()" style="display: none">Stop</button>
+    </div>
+  </body>
+</html>
