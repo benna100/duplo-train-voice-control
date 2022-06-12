@@ -3,7 +3,7 @@ import { PitchDetector } from "https://esm.sh/pitchy@4";
 const MIN_TRAIN_SPEED = 25;
 const MAX_TRAIN_SPEED = 100;
 const MIN_VOICE_FREQUENCY = 80;
-const MAX_VOICE_FREQUENCY = 650;
+const MAX_VOICE_FREQUENCY = 600;
 
 let pitches = [];
 let clarities = [];
@@ -51,6 +51,8 @@ async function connect() {
     const averagePitch = average(pitches);
     const avegareClarity = average(clarities);
 
+    console.log(averagePitch, avegareClarity);
+
     const roundedPitch = Math.round(averagePitch * 10) / 10;
     const scaledPitchForDuploTrain = d3
       .scaleLinear()
@@ -68,8 +70,6 @@ async function connect() {
     } else {
       drive(0);
     }
-
-    drive(avegareClarity > 0.8 ? scaledPitchForDuploTrain(averagePitch) : -100);
   }, 300);
 }
 
@@ -84,9 +84,8 @@ function write(data) {
   characteristic.writeValue(message);
 }
 
-document.querySelector("button").addEventListener("click", connect);
-
-document.addEventListener("DOMContentLoaded", () => {
+document.querySelector("button.connect").addEventListener("click", connect);
+document.querySelector("button.listen").addEventListener("click", () => {
   const audioContext = new window.AudioContext();
   const analyserNode = audioContext.createAnalyser();
   audioContext.resume();
