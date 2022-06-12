@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Control your Duplo train with your voice!</title>
+    <title>Control your duplo train with your voice</title>
     <style>
       body {
         margin: 0;
@@ -57,8 +57,13 @@
     </style>
   </head>
   <body>
+    <h1>Control your duplo train using your voice</h1>
+    <h2>
+      The higher the pitch the faster the train will go.
+      <strong>Only works in Chrome sadly (because of bluetooth support)</strong>
+    </h2>
+    <button id="connect">Connect to the Duplo train</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
 
     <script src="index.js" type="module"></script>
   </body>
