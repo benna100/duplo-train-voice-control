@@ -4,17 +4,8 @@ Control the speed of your duplo train with your voice pitch 🎉
 
 ## Installation
 
-Make sure you have fulfilled all these requirements: https://github.com/abandonware/noble#prerequisites
+Simply open the index.html file in your browser or go to https://benna100.github.io/duplo-train-voice-control/
 
-Then run
-`npm install`
+## Contribution
 
-## Running
-
-To run the script write
-
-`npm run start`
-
-Now go to http://localhost:3000/, make sure the microphone access is granted for the browser.
-
-Then turn on the train, let it connect and start using your voice to control the train 🎶
+I originally created this project using node to connect to the train. I posted about it on Hackernews and this HackerNews user's comment: https://news.ycombinator.com/item?id=31610813 made me discard the node part. So now the browser connects to the train which is a lot easier fx on your phone. The only problem is it only works on Chrome because of bluetooth support
