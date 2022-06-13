@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Control your duplo train with your voice</title>
     <style>
       body {
@@ -9,6 +11,7 @@
         padding-bottom: 3rem;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif;
+        padding: 12px;
       }
 
       #form {
@@ -62,8 +65,16 @@
       The higher the pitch the faster the train will go.
       <strong>Only works in Chrome sadly (because of bluetooth support)</strong>
     </h2>
-    <button class="connect">Connect to the Duplo train</button>
-    <button class="listen">Listen to your voice</button>
+
+    <h3>
+      First listen for your voice and accept permission. Then connect to the
+      train
+    </h3>
+
+    <button class="listen">1. Listen to your voice</button>
+    <button class="connect">2. Connect to the Duplo train</button>
+    <p class="success"></p>
+    <p class="speed"></p>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
 
     <script src="index.js" type="module"></script>

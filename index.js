@@ -3,7 +3,7 @@ import { PitchDetector } from "https://esm.sh/pitchy@4";
 const MIN_TRAIN_SPEED = 25;
 const MAX_TRAIN_SPEED = 100;
 const MIN_VOICE_FREQUENCY = 80;
-const MAX_VOICE_FREQUENCY = 600;
+const MAX_VOICE_FREQUENCY = 700;
 
 let pitches = [];
 let clarities = [];
@@ -18,9 +18,12 @@ function updatePitch(analyserNode, detector, input, sampleRate) {
 
   window.setTimeout(
     () => updatePitch(analyserNode, detector, input, sampleRate),
-    50
+    10
   );
 }
+
+const speedTag = document.querySelector("p.speed");
+const p = document.querySelector("p.success");
 
 async function connect() {
   try {
@@ -45,13 +48,15 @@ async function connect() {
     alert(e);
   }
 
+  p.innerText = "Successfully connected to train 🥳";
+
   const average = (array) => array.reduce((a, b) => a + b) / array.length;
 
   setInterval(() => {
     const averagePitch = average(pitches);
     const avegareClarity = average(clarities);
 
-    console.log(averagePitch, avegareClarity);
+    console.log(parseInt(averagePitch), avegareClarity);
 
     const roundedPitch = Math.round(averagePitch * 10) / 10;
     const scaledPitchForDuploTrain = d3
@@ -67,8 +72,10 @@ async function connect() {
 
     if (scaledPitch > 0 && scaledPitch < 100) {
       drive(scaledPitch);
+      speedTag.innerText = `The speed is ${scaledPitch}`;
     } else {
       drive(0);
+      speedTag.innerText = `The speed is 0`;
     }
   }, 300);
 }
@@ -84,8 +91,8 @@ function write(data) {
   characteristic.writeValue(message);
 }
 
-document.querySelector("button.connect").addEventListener("click", connect);
-document.querySelector("button.listen").addEventListener("click", () => {
+const buttonListen = document.querySelector("button.listen");
+buttonListen.addEventListener("click", () => {
   const audioContext = new window.AudioContext();
   const analyserNode = audioContext.createAnalyser();
   audioContext.resume();
@@ -96,4 +103,12 @@ document.querySelector("button.listen").addEventListener("click", () => {
     const input = new Float32Array(detector.inputLength);
     updatePitch(analyserNode, detector, input, audioContext.sampleRate);
   });
+
+  buttonListen.disabled = true;
+});
+
+const buttonConnect = document.querySelector("button.connect");
+buttonConnect.addEventListener("click", () => {
+  connect();
+  buttonConnect.disabled = true;
 });
